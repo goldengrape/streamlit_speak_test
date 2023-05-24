@@ -2,7 +2,7 @@
 from langchain.callbacks.base import BaseCallbackHandler
 import azure.cognitiveservices.speech as speechsdk
 import os
-from pydub import AudioSegment  
+# from pydub import AudioSegment  
 import base64
 
 
