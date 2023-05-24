@@ -80,14 +80,11 @@ class StreamSpeakHandler(BaseCallbackHandler):
 
     def speak_text_to_streamlit(self, text):
         result = self.speech_synthesizer.speak_ssml_async(text).get()
-        if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        if st.secrets.get("run_place") != "local":
             audio_stream = result.audio_data
             audio_base64 = base64.b64encode(audio_stream).decode('utf-8')
             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
             self.container.markdown(audio_tag, unsafe_allow_html=True)
-            print(text)
-            print(result.audio_duration)
-            print(type(result.audio_duration))
             number_of_seconds = result.audio_duration.seconds
             time.sleep(number_of_seconds)
 
