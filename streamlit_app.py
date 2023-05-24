@@ -29,7 +29,8 @@ class StreamDisplayHandler(BaseCallbackHandler):
 
 
 class StreamSpeakHandler(BaseCallbackHandler):
-    def __init__(self, synthesis="zh-CN-XiaoxiaoNeural", rate="+50.00%"):
+    def __init__(self, container, synthesis="zh-CN-XiaoxiaoNeural", rate="+50.00%"):
+        self.container = container
         self.new_sentence = ""
         # Initialize the speech synthesizer
         self.synthesis=synthesis
@@ -79,13 +80,13 @@ class StreamSpeakHandler(BaseCallbackHandler):
 
     def speak_text_to_streamlit(self, text):
         result = self.speech_synthesizer.speak_ssml_async(text).get()
-        # print(dir(result))
+        print(dir(result))
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             audio_stream = result.audio_data
             audio_base64 = base64.b64encode(audio_stream).decode('utf-8')
             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-            st.markdown(audio_tag, unsafe_allow_html=True)
-            time.sleep(2)
+            self.container.markdown(audio_tag, unsafe_allow_html=True)
+            time.sleep(result.audio_duration/1000)
 
 
 #### demo ####
@@ -104,10 +105,11 @@ ask_button = st.button("ask")
 
 st.markdown("### streaming box")
 chat_box = st.empty()
+speak_box=st.empty()
 display_handler = StreamDisplayHandler(
     chat_box,
     display_method='write')
-speak_handler = StreamSpeakHandler(synthesis="en-US-AriaNeural",rate="+30.00%")
+speak_handler = StreamSpeakHandler(container=speak_box, synthesis="en-US-AriaNeural",rate="+30.00%")
 chat = ChatOpenAI(
         max_tokens=100, streaming=True,
         callbacks=[display_handler, speak_handler])
