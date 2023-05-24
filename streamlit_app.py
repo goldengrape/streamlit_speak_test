@@ -87,7 +87,9 @@ class StreamSpeakHandler(BaseCallbackHandler):
             self.container.markdown(audio_tag, unsafe_allow_html=True)
             print(text)
             print(result.audio_duration)
-            time.sleep(result.audio_duration)
+            print(type(result.audio_duration))
+            number_of_seconds = result.audio_duration.seconds
+            time.sleep(number_of_seconds)
 
 
 #### demo ####
