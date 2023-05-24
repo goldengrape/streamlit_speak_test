@@ -4,6 +4,7 @@ import azure.cognitiveservices.speech as speechsdk
 import os
 # from pydub import AudioSegment  
 import base64
+import time 
 
 
 class StreamDisplayHandler(BaseCallbackHandler):
@@ -84,6 +85,7 @@ class StreamSpeakHandler(BaseCallbackHandler):
             audio_base64 = base64.b64encode(audio_stream).decode('utf-8')
             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
             st.markdown(audio_tag, unsafe_allow_html=True)
+            time.sleep(2)
 
 
 #### demo ####
