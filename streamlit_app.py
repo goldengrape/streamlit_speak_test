@@ -93,7 +93,10 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 import streamlit as st
 
-api_key=st.text_input("input your api key", value=os.environ.get('OPENAI_API_KEY'))
+os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
+os.environ["SPEECH_KEY"] = st.secrets["speech_key"]
+os.environ['SPEECH_REGION']=st.secrets["speech_region"]
+
 query = st.text_input("input your query", value="Tell me a joke")
 ask_button = st.button("ask")
 
@@ -103,9 +106,7 @@ display_handler = StreamDisplayHandler(
     chat_box,
     display_method='write')
 speak_handler = StreamSpeakHandler(synthesis="en-US-AriaNeural",rate="+30.00%")
-if api_key:
-    os.environ['OPENAI_API_KEY'] = api_key
-    chat = ChatOpenAI(
+chat = ChatOpenAI(
         max_tokens=100, streaming=True,
         callbacks=[display_handler, speak_handler])
 
