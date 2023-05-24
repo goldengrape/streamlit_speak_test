@@ -55,8 +55,8 @@ class StreamSpeakHandler(BaseCallbackHandler):
         if token in ".:!?。：！？\n":
             # Synthesize the new sentence
             speak_this = self.new_sentence
-
-            ssml_text=f"""<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="en-US">
+            if len(speak_this) > 0:
+                ssml_text=f"""<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="en-US">
     <voice name="{self.synthesis}">
     <prosody rate="{self.rate}">
             {speak_this}
@@ -66,8 +66,8 @@ class StreamSpeakHandler(BaseCallbackHandler):
 
 
 
-            # self.speak_ssml_async(ssml_text)
-            self.speak_text_to_streamlit(ssml_text)
+                # self.speak_ssml_async(ssml_text)
+                self.speak_text_to_streamlit(ssml_text)
             self.new_sentence = ""
 
     def on_llm_end(self, response, **kwargs) -> None:
@@ -80,13 +80,14 @@ class StreamSpeakHandler(BaseCallbackHandler):
 
     def speak_text_to_streamlit(self, text):
         result = self.speech_synthesizer.speak_ssml_async(text).get()
-        print(dir(result))
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             audio_stream = result.audio_data
             audio_base64 = base64.b64encode(audio_stream).decode('utf-8')
             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
             self.container.markdown(audio_tag, unsafe_allow_html=True)
-            # time.sleep(result.audio_duration/1000)
+            print(text)
+            print(result.audio_duration)
+            time.sleep(result.audio_duration)
 
 
 #### demo ####
