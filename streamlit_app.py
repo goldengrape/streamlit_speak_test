@@ -86,7 +86,7 @@ class StreamSpeakHandler(BaseCallbackHandler):
             audio_base64 = base64.b64encode(audio_stream).decode('utf-8')
             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
             self.container.markdown(audio_tag, unsafe_allow_html=True)
-            time.sleep(result.audio_duration/1000)
+            # time.sleep(result.audio_duration/1000)
 
 
 #### demo ####
